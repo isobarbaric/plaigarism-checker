@@ -2,32 +2,24 @@ import cfscrape
 from bs4 import BeautifulSoup
 from urllib.parse import quote
 
-def google_search(search_query: str):
+def google_search(search_query: str, num_pages: int = 5) -> list[str]:
     modified_query = quote(search_query)
     scraper = cfscrape.create_scraper()
-    url = f"https://www.google.com/search?q={modified_query}&start=0"
-    response = scraper.get(url).text
-    soup = BeautifulSoup(response, 'lxml')
-    search_results = soup.find('div', class_='v7W49e')
+    base_url = f"https://www.google.com/search?q={modified_query}&start="
     results = []
-    for div in search_results.find_all(recursive=False):
-        link_location = div.find_all(class_="yuRUbf")
-        if len(link_location) != 0:
-            try:
-                link = link_location[0].a['href']
+    for i in range(num_pages):
+        print(base_url + str(10*i))
+        response = scraper.get(base_url + str(10*i)).text
+        soup = BeautifulSoup(response, 'lxml')
+        search_results = soup.find('div', class_='v7W49e')
+        for div in search_results.find_all(recursive=False):
+            link_location = div.find(class_="yuRUbf")
+            if link_location is not None:
+                link = link_location.a['href']
                 results.append(link.replace(' › ', '/'))
-            except:
-                pass
     return results
 
-
-# search_query = 'dog'
-# with open('page.txt') as f:
-#    response = f.read().strip()
-# soup = BeautifulSoup(response, 'lxml')
-# search_results = soup.find('div', class_='v7W49e')
-
-
 search_results = google_search('dog')
-print(search_results)
+for link in search_results:
+    print(link)
 
