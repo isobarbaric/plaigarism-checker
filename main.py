@@ -9,23 +9,21 @@ def google_search(search_query: str):
     response = scraper.get(url).text
     soup = BeautifulSoup(response, 'lxml')
     search_results = soup.find('div', class_='v7W49e')
-    for div in search_results.find('div', recursive=False):
-        print(str(div) + '\n\n')
     results = []
+    for div in search_results.find_all(recursive=False):
+        text_location = div.select('div[class*="VwiC3b yXK7lf MUxGbd yDYNvb lyLwlc"]')
+        # print(text_location)
+        if len(text_location) != 0:
+            results.append(text_location[0].text)
+    return results
 
-search_query = 'dog'
-with open('page.txt') as f:
-    response = f.read().strip()
-soup = BeautifulSoup(response, 'lxml')
-search_results = soup.find('div', class_='v7W49e')
-# print(str(search_results)[:500])
-# assert len(search_results) == 1
+# search_query = 'dog'
+# with open('page.txt') as f:
+#    response = f.read().strip()
+# soup = BeautifulSoup(response, 'lxml')
+# search_results = soup.find('div', class_='v7W49e')
 
-for div in search_results.find_all(recursive=False):
-    text_location = div.find('div', class_='VwiC3b yXK7lf MUxGbd yDYNvb lyLwlc lEBKkf')
-    print(text_location.text)
-    break
 
-results = []
+search_results = google_search('dog')
+print(search_results)
 
-# google_search('dog')
