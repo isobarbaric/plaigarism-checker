@@ -4,18 +4,22 @@ from urllib.parse import quote
 
 def google_search(search_query: str):
     modified_query = quote(search_query)
-    url = f"https://www.google.com/search?q={modified_query}"
     scraper = cfscrape.create_scraper()
+    url = f"https://www.google.com/search?q={modified_query}&start=0"
     response = scraper.get(url).text
     soup = BeautifulSoup(response, 'lxml')
     search_results = soup.find('div', class_='v7W49e')
     results = []
     for div in search_results.find_all(recursive=False):
-        text_location = div.select('div[class*="VwiC3b yXK7lf MUxGbd yDYNvb lyLwlc"]')
-        # print(text_location)
-        if len(text_location) != 0:
-            results.append(text_location[0].text)
+        link_location = div.find_all(class_="yuRUbf")
+        if len(link_location) != 0:
+            try:
+                link = link_location[0].a['href']
+                results.append(link.replace(' › ', '/'))
+            except:
+                pass
     return results
+
 
 # search_query = 'dog'
 # with open('page.txt') as f:
