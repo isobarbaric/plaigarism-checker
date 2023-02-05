@@ -4,19 +4,19 @@ from urllib.parse import quote
 from trafilatura import fetch_url, extract
 import time
 
-class PlaigarismChecker:
+class PlagarismChecker:
     def __init__(self):
         pass
 
-    def check(topic: str, text: str) -> dict:
-        # can possibly try to fnd a way to extract topic from text itself
-        relevant_links = PlaigarismChecker.google_search(topic)
+    # def validation(self, topic: str, text: str) -> dict:
+    #     # can possibly try to fnd a way to extract topic from text itself
+    #     relevant_links = PlaigarismChecker.__google_search(topic)
 
-        # return {percentage details}
-        pass
+    #     # return {percentage details}
+    #     return dict()
 
     @staticmethod
-    def __google_search(search_query: str, num_pages: int = 5) -> list[str]:
+    def google_search(search_query: str, num_pages: int = 5) -> list[str]:
         modified_query = quote(search_query)
         scraper = cfscrape.create_scraper()
         base_url = f"https://www.google.com/search?q={modified_query}&start="
@@ -34,7 +34,7 @@ class PlaigarismChecker:
         return results
 
     @staticmethod
-    def __extract_content(links: list[str]) -> list[str]:
+    def extract_content(links: list[str]) -> list[str]:
         extracted_text = []
         for url in links:
             downloaded = fetch_url(url)
@@ -46,10 +46,9 @@ class PlaigarismChecker:
     def compute():
         pass
 
-start = time.time()
-search_results = google_search('dog', num_pages=2)
-text = extract_content(search_results)
-print(text[1][:1000])
-print(time.time() - start)
-
-
+if "__name__" == "__main__":
+    start = time.time()
+    search_results = PlagarismChecker.google_search('dog', num_pages=2)
+    text = PlagarismChecker.extract_content(search_results)
+    print(text[1][:1000])
+    print(time.time() - start)
