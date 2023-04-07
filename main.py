@@ -4,21 +4,20 @@ from urllib.parse import quote
 from trafilatura import fetch_url, extract
 import time
 
-class PlagarismChecker:
+class plagarism_checker:
 
     def __init__(self):
         pass
 
     def validation(self, topic: str, text: str) -> dict:
         # can possibly try to fnd a way to extract topic from text itself
-        relevant_links = PlagarismChecker.google_search(topic)
+        relevant_links = plagarism_checker.google_search(topic)
 
         # return {percentage details}
         return dict()
 
     @staticmethod
     def google_search(search_query: str, num_pages: int = 5) -> list[str]:
-
         # creating a search query string from exact search text
         modified_query = quote(search_query)
 
@@ -28,7 +27,6 @@ class PlagarismChecker:
         results = []
 
         for i in range(num_pages):
-
             # getting a response and parsing it
             response = scraper.get(base_url + str(10*i)).text
             soup = BeautifulSoup(response, 'lxml')
@@ -38,7 +36,6 @@ class PlagarismChecker:
 
             # looping through nested elements inside the div
             for div in search_results.find_all(recursive=False):
-
                 # determining html element containing the link for a search result
                 link_location = div.find(class_="yuRUbf")
 
@@ -54,7 +51,6 @@ class PlagarismChecker:
 
         # looping through list containing links to webpages
         for url in links:
-
             # fetching page content at url
             downloaded = fetch_url(url)
 
@@ -70,7 +66,7 @@ class PlagarismChecker:
 
 if "__name__" == "__main__":
     start = time.time()
-    search_results = PlagarismChecker.google_search('dog', num_pages=2)
-    text = PlagarismChecker.extract_content(search_results)
+    search_results = plagarism_checker.google_search('dog', num_pages=2)
+    text = plagarism_checker.extract_content(search_results)
     print(text[1][:1000])
     print(time.time() - start)
